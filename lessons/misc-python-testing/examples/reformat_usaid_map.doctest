@@ -1,0 +1,131 @@
+The MAP file consists of an information header (which we currently ignore), and a series
+of records describing survey variables.  Here's a reduced sample of a MAP file:
+
+
+    >>> data = """\
+    ...                                                    BDKR4JFL
+    ...                                                 BDKR4JFL_DICT
+    ...
+    ...                                            C:\exports\BDKR4JFL.DCF
+    ...                                     Last Modified:  10/23/2006  2:13:15 PM
+    ...
+    ... --------------------------------------------------------------------------------------------------------------
+    ... Level Name                    Level Label                                                  Type            Rec
+    ...   Record Name                   Record Label                                              Value  Req  Max  Len
+    ... --------------------------------------------------------------------------------------------------------------
+    ... HOUSEHOLD                     HOUSEHOLD
+    ...   RECORD1                       RECORD1                                                          Yes    1 1590
+    ... Level: HOUSEHOLD                                       Record: RECORD1
+    ... --------------------------------------------------------------------------------------------------------------
+    ...                                                                                  Data Item            Dec Zero
+    ... Item Name              Item Label                                     Start  Len Type Type  Occ  Dec Char Fill
+    ... --------------------------------------------------------------------------------------------------------------
+    ...                          (record type)                                    0    0   AN    I    1    0   No   No
+    ... CASEID            (id) Case Identification                                1   15   AN    I    1    0   No   No
+    ... MIDX              (id) Index to birth history                            16    1    N    I    1    0   No   No
+    ...                                1:6  
+    ... V000                   Country code and phase                            17    3   AN    I    1    0   No   No
+    ... V001                   Cluster number                                    20    8    N    I    1    0   No   No
+    ...                                1:550  
+    ... V012                   Current age - respondent                          67    2    N    I    1    0   No   No
+    ...                                10:49  
+    ...                           (na)        NotAppl
+    ... V013                   Age 5-year groups                                 69    1    N    I    1    0   No   No
+    ...                                0  10-14
+    ...                                1  15-19
+    ...                                2  20-24
+    ...                                3  25-29
+    ...                                4  30-34
+    ...                                5  35-39
+    ...                                6  40-44
+    ...                                7  45-49
+    ...                           (na)    NotAppl
+    ... """
+
+We'll come back to that in a minute.  First we'll test the function that parse
+individual bits of this data.
+
+Start with the first line of a variable description:
+
+    >>> spec = 'CASEID            (id) Case Identification                                1   15   AN    I    1    0   No   No'
+
+The function reformat_spec_line turns this into a tuple consisting of the
+Item Name, the Item Label, and the remaining columns.  (You will note
+that our spec string does not contain a newline...reformat_spec_line
+expects to be handed an already-stripped line).
+
+    >>> from reformat_usaid_map import reformat_spec_line
+    >>> reformat_spec_line(spec)
+    ['CASEID', '(id) Case Identification', '1', '15', 'AN', 'I', '1', '0', 'No', 'No']
+
+reformat_block takes this one step further.  In addition to the spec line, it takes
+a second argument consisting of a list of (stripped) lines from the 'body' of the
+entry:
+
+    >>> from reformat_usaid_map import reformat_block
+    >>> reformat_block(spec, ['some', 'dummy', 'lines'])
+    ['CASEID', '(id) Case Identification', '1', '15', 'AN', 'I', '1', '0', 'No', 'No', 'some\ndummy\nlines']
+
+If there are no lines, the last element of the tuple it returns is blank:
+
+    >>> reformat_block(spec, [])
+    ['CASEID', '(id) Case Identification', '1', '15', 'AN', 'I', '1', '0', 'No', 'No', '']
+
+reformat_data is a generator that takes an interator as its input. It skips
+the header and outputs whatever blocks are in the rest of the file:
+
+    >>> from reformat_usaid_map import reformat_data
+    >>> for data_line in reformat_data(data.splitlines(True)):
+    ...     print data_line
+    ['CASEID', '(id) Case Identification', '1', '15', 'AN', 'I', '1', '0', 'No', 'No', '']
+    ['MIDX', '(id) Index to birth history', '16', '1', 'N', 'I', '1', '0', 'No', 'No', '1:6']
+    ['V000', 'Country code and phase', '17', '3', 'AN', 'I', '1', '0', 'No', 'No', '']
+    ['V001', 'Cluster number', '20', '8', 'N', 'I', '1', '0', 'No', 'No', '1:550']
+    ['V012', 'Current age - respondent', '67', '2', 'N', 'I', '1', '0', 'No', 'No', '10:49\n(na)        NotAppl']
+    ['V013', 'Age 5-year groups', '69', '1', 'N', 'I', '1', '0', 'No', 'No', '0  10-14\n1  15-19\n2  20-24\n3  25-29\n4  30-34\n5  35-39\n6  40-44\n7  45-49\n(na)    NotAppl']
+
+Finally, at the outermost level (aside from the main program, which we aren't
+testing here), we have generate_csv, which expects input and output file-like
+objects as its arguments, and transforms the input data into the CSV version
+of the lists produced by reformat_data:
+
+    >>> from reformat_usaid_map import generate_csv
+    >>> from StringIO import StringIO
+    >>> inf = StringIO(data)
+    >>> inf.name = 'sample'
+    >>> outf = StringIO()
+    >>> generate_csv(inf, outf)
+    >>> for line in outf.getvalue().splitlines():
+    ...     print line
+    Map_Name,Item_Name,Item_Label,Start,Len,Data_Type,Item_Type,Occ,Dec,Dec_Char,Zero_Fill,Values
+    sample,CASEID,(id) Case Identification,1,15,AN,I,1,0,No,No,
+    sample,MIDX,(id) Index to birth history,16,1,N,I,1,0,No,No,1:6
+    sample,V000,Country code and phase,17,3,AN,I,1,0,No,No,
+    sample,V001,Cluster number,20,8,N,I,1,0,No,No,1:550
+    sample,V012,Current age - respondent,67,2,N,I,1,0,No,No,"10:49
+    (na)        NotAppl"
+    sample,V013,Age 5-year groups,69,1,N,I,1,0,No,No,"0  10-14
+    1  15-19
+    2  20-24
+    3  25-29
+    4  30-34
+    5  35-39
+    6  40-44
+    7  45-49
+    (na)    NotAppl"
+
+Although we want to handle an end-of-file gracefully, as we show above, the actual
+data files end with a footer that is introduced by a row of '-' characters.  So we
+also need to recognize that kind of end of data marker:
+
+    >>> for line in reformat_data(data.splitlines(True) + ['--------------------\n']):
+    ...     print line
+    ['CASEID', '(id) Case Identification', '1', '15', 'AN', 'I', '1', '0', 'No', 'No', '']
+    ['MIDX', '(id) Index to birth history', '16', '1', 'N', 'I', '1', '0', 'No', 'No', '1:6']
+    ['V000', 'Country code and phase', '17', '3', 'AN', 'I', '1', '0', 'No', 'No', '']
+    ['V001', 'Cluster number', '20', '8', 'N', 'I', '1', '0', 'No', 'No', '1:550']
+    ['V012', 'Current age - respondent', '67', '2', 'N', 'I', '1', '0', 'No', 'No', '10:49\n(na)        NotAppl']
+    ['V013', 'Age 5-year groups', '69', '1', 'N', 'I', '1', '0', 'No', 'No', '0  10-14\n1  15-19\n2  20-24\n3  25-29\n4  30-34\n5  35-39\n6  40-44\n7  45-49\n(na)    NotAppl']
+
+The actual data has a larger footer, but the above is enough to trigger our
+end of file detection.
