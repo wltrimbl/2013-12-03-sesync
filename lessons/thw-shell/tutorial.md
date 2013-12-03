@@ -2,7 +2,7 @@
 layout: lesson
 root: ../..
 github_username: wltrimbl
-bootcamp_slug: 2103-12-03-sesync
+bootcamp_slug: 2013-12-03-sesync
 title: The Unix Shell
 ---
 **Based on material by Milad Fatenejad, Sasha Wood, and Radhika Khetani**
