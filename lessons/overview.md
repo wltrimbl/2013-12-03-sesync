@@ -69,12 +69,12 @@
 ## Our Goals for You
 
 ### We will take you on a tour of:
->
-* Managing and sharing Software, Data, and Manuscripts with Git
-* Automating things with the shell
-* Principles of Practical Programming with Python
-* Scientific Computing with Python
-* Gallery of plotting and mapping in Python (matplotlib and basemap)
+
+* Managing and sharing Software, Data, and Manuscripts with **Git**
+* Automating things with the **shell**
+* Practical Programming with **Python**
+* Scientific Computing with Python (numpy, matplotlib)
+* Data munging / parsing with python
 
 # Some High-Level Advice
 
@@ -85,41 +85,34 @@ Choosing to use a new tool, library, or language can be similar to
 learning a new language:
 </comment>
 
->
+
 + There is a high initial startup cost as you learn vocabulary, grammar, and
 idioms
 <font color=blue>`sum(x*y for x,y in itertools.izip(x_vector, y_vector))`
 </font color>
-+ You will learn faster by observing and working with others who are more
-skilled than you
 + But once you have gained some fluency, you will find yourself capable of
 new things!
-
-## Use domain specific languages and libraries to increase your expressivity
-
-* Aim for languages and tools that allow you to express your models and
++ You will learn faster by observing and working with others who are more
+skilled than you
++ Aim for languages and tools that allow you to express your models and
 manage your data simply. 
 
 ## Make it work right first, make it fast later.
+* "Premature optimization is the root of all evil." -- Donald Knuth
+* Directing your attention to making it use less disk / less memory /
+less time from the start is wrongly directed attention.
 
-## Use REPL Environments for Development
+## Increase debugging bandwidth
 
-**REPL (read-eval-print-loop)** environments tighten the coupling between
+* **REPL (read-eval-print-loop)** environments tighten the coupling between
 the code you write and the results you see, increasing productivity.
-
-REPL                                        non-REPL
--------------------          -----------------------
-Visual Basic                 Supercomputers
-Command Line                 C
-IPython and Python           C++
-MATLAB                       Java
-Mathematica                  Fortran
-LISP
+* Development environments and debuggers give you more information at once 
+* Test your procedures on subsets of your data **so that you learn whether
+it works faster**
 
 # Don't Repeat Yourself (or Others)
 
 ## Automate common actions by saving simple blocks of code into **scripts**
-
 
 * A script is a set of commands organized into a single file
 * The script is the basest unit of scientific programming, you should be
@@ -163,8 +156,8 @@ computations or model are naturally expressed with it
     + you will have to do less initial work (sometimes)
     + you will introduce less bugs
     + your code will be easier to understand and maintain
-* When writing software, try to keep individual functions short, single-purpose,
-and avoid excessive nesting
+* Keep individual functions short, single-purpose, possible
+ to be confident in festooning.
 
 ## Back up your data!
 
@@ -175,23 +168,20 @@ and avoid excessive nesting
   + you can easily restore back in the morning if it was a bad idea
 * use **distributed version control** to collaborate with others
 * We advocate *Git*, but you may be stuck with whatever your group uses
-  + though check out git-svn for using Git to collaborate with an svn repository,
-  it's awesome!
 
 
 # Verify and Validate your Code
 
 ## Principles of verification and validation
 * **verification** - is your code correctly written?
-* **validation** - do your computations accurately model the physical phenomena
-in question?
-* test frameworks help you verify your code, but validation is usually a manual
-process
-* Be paranoid and test small things!  
+* Be paranoid.
+  + test small things!  
+  + test that what you assume is TRUE is in fact so.
+* test frameworks can help you verify your code
+* **validation** - do your computations accurately model the phenomena in question?
+  + not a good candidate for automation.  (Not sad at all)
 
-# Document your Computational Work
-
-## Principles of documentation
+## Document your computational work
 * Save every bit of code you use for generating publishable results
 * Document and comment your code for yourself as if you will need to understand
 it in 6 months
@@ -200,26 +190,30 @@ it in 6 months
 * If any piece of code is too complex to easily describe, consider refactoring
 it
 
-
-
-### Shcedule 
+## Schedule 
 * Today 
 * **9:00-12:00** Shell / python 
 * **1:00-4:30**  Python 
-* Wendesday 
+* Wednesday 
 * **9:00-12:00** Version control with git 
 * **1:00-4:30**  Testing, data manipulation, and regular expressions
+## Schedule
+* Thursday  Dec 5
+* Additional presentations
+* Projects
+* Friday    Dec 6
+* Projects
 
 # Closing Thoughts
 
-## Aim for reproducibility
-* The goals of non-review scientific publications are to:
-    + Describe a new result or approach
-    + Convince others of its usefulness
-* The **reproducibility** of your publication will greatly benefit both of
-these goals
-* See <http://figshare.com> for an easy way to store and share your data in
-an easily-cited way
+## You sometimes need geeks.  You never need dorks.
+<div align="center">
+<table>
+<tr>
+<td><img src="swc-demographics/careful.png" /></td>
+</tr>
+</table>
+</div>
 
 # References and Further Reading
 
@@ -272,11 +266,3 @@ http://sciencecodemanifesto.org
 *Publicly signed commitment to clear licensing and curation of software
 associated with research publications.*
 
-## You sometimes need geeks.  You never need dorks.
-<div align="center">
-<table>
-<tr>
-<td><img src="swc-demographics/careful.png" /></td>
-</tr>
-</table>
-</div>
