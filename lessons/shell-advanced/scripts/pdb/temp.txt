@@ -1,0 +1,10 @@
+  479  bash sorted.sh v*.pdb | sed '$d'
+  480  bash sorted.sh v*.pdb | sed 'll d'
+  481* bash sorted.sh v*.pdb | sed '
+  482  ls
+  483  cat sorted.sh 
+  484  bash sorted.sh
+  485  man colrm
+  486  ls
+  487  history | tail -10 temp.txt
+  488  history | tail -10 > temp.txt

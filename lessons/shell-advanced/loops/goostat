@@ -1,0 +1,10 @@
+# goostat to run statistics. First argument: input file. Second argument: output filename
+# just a demo, does not acutally do any statistics
+if [ -s $1 ]
+then
+    sleep 1.5
+    echo 'Analysis is done' > $2
+    cat $1 >> $2
+else
+    echo file $1 does not exist
+fi
