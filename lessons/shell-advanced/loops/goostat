@@ -2,7 +2,7 @@
 # just a demo, does not acutally do any statistics
 if [ -s $1 ]
 then
-    sleep 1.5
+    sleep 2
     echo 'Analysis is done' > $2
     cat $1 >> $2
 else
