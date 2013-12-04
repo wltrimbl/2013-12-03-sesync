@@ -24,6 +24,7 @@ But the agreement is not perfect:
 `ls /bin | grep '^..$'   # do the same using grep  ` 
 
 `ls /bin/* `
+
 `ls /bin | grep '.*'  `
 
 Speaking of the shell, since some of the punctuation marks in regular expressions ( like ? and *) 
@@ -114,6 +115,7 @@ matches all the words that do not begin with vowels.
 matches all the three-letter words that start with a consonant and end with two vowels.
 
 # Quantifiers
+
 Quantifiers are where the real power of regular expressions appears.  Characters and character
 classes can be modified to match 0 or 1, 1 or more, or 0 or more times, or even a specified number
 of times. 
@@ -121,29 +123,67 @@ of times.
 `grep '^[^aeiou][aeiou]*$' `
 matches all the words consisting of exactly one consonant and zero or more vowels.
 
-Python regexp syntax.
+# Python regexp syntax.
 
-What you need to know is described in the (Python documentation on re)[http://docs.python.org/2.7/library/re.html], but it's a little dry.  
+What you need to know is described in the [Python documentation on the re module](http://docs.python.org/2.7/library/re.html), but it's a little dry.  
 
-Grouping
+The essentials:  
+you need the line `import re` to use regular expressions.  This is built in to python.
 
-Within regular expressions, we will often desire to match more than one pattern
+```
+import re
+match_object = re.search(pattern, string_to_be_searched)
+if match_object != None:
+    print match_object.string
+```
+
+`re.search(pattern, string_to_be_searched)` is the basic
+syntax for searching for a (possibly complicated) pattern.
+Likemany of the regular expression methods, it returns
+"match objects" if there is a match, and "None" if there
+is no match.  It is conventional to test whether a match
+is equal to None, and if not, get the data out.  Trying
+to get the data out of a NoneType object results in an error.
+
+# Grouping
+
+Within regular expressions, we will often desire to match more 
+than one pattern
 at the same time, or to extract different parts of the matched string
 as different variables.
 
 This can be accomplished by using groups.  Sets of symbols enclosed
 in parentheses will be returned as separately accessible variables.
 
-
+Suppose we wanted to match the html link address and the tag text 
+from a webpage.
 ```
 import re
 s = "<a href=THISISAMONSTER.ZIP>tag</a>"
-p=re.compile(r"a href=(.*?)>")
-p=re.compile(r"a href=([^>]*)")
-h = p.search(s)
-if h != None:
-    print h.groups()
+matchresult=re.search(r"a href=(.*?)>(.*?)<", s)
+if matchresult != None:
+    print matchresult.groups()
 ```
 
+# Scraping
+
+Sometimes you will get data is a less than convenient
+format.  Like HTML.  This page 
+http://www.ncbi.nlm.nih.gov/projects/WGS/WGSprojectlist.cgi
+Has a list of several thousand datasets in an HTML table;
+they have dataset numbers, organism names, urls, and 
+some summaries of the data.  Suppose we wanted to extract
+all the urls (and later decide which urls looked relevant
+to our research).
+
+Exercise:
+Use curl to download this page.
+```
+curl http://www.ncbi.nlm.nih.gov/projects/WGS/WGSprojectlist.cgi > WGSprojectlist.html
+```
+
+Go through the page one line at a time.
+Use a regular expression to find the href=URL tags.
+Print all the urls linked on the page.
 
 
