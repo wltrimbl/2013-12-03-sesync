@@ -307,7 +307,7 @@ Take a look at the file `test_reformat_usaid_map.py` in the examples directory.
 
 In the exercises directory, run the following command:
 
-    > nose
+    > nosetests
 
 This automatically "discovers" all of the `.py` files that contain
 classes that are subclasses of `unittest.TestCase`, collects all of
@@ -316,6 +316,7 @@ and runs them one by one, reporting the results.  Each '.' represents
 a single successful test method.
 
 You know the drill by now: edit `reformat_usaid_map.py` and break it,
-first by changing the column name, then by making a syntax error, and
-re-run the `nose` command each time to see what it does.  Like `doctest`,
-`nose` has a `-v` option you might want to try out as well.
+first by changing the column name, then by making a syntax error,
+and re-run the `nosetests` command each time to see what it does.
+Like `doctest`, `nosetests` has a `-v` option you might want to try out
+as well.
