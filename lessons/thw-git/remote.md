@@ -1,8 +1,8 @@
 ---
 layout: lesson
 root: ../..
-testrepo: 2013-12-25-euphoric
-username: instructor
+testrepo: testrepo-2013-12-02-sesync
+username: wltrimbl
 title: "Version Control With Git: Using Remote Repositories"
 ---
 ## github.com?
