@@ -125,10 +125,10 @@ matches all the words consisting of exactly one consonant and zero or more vowel
 
 # Python regexp syntax.
 
-What you need to know is described in the (Python documentation on re)[http://docs.python.org/2.7/library/re.html], but it's a little dry.  
+What you need to know is described in the [Python documentation on the re module](http://docs.python.org/2.7/library/re.html), but it's a little dry.  
 
-But the essentials:  
-you need the line `import re` to use regular expressions.
+The essentials:  
+you need the line `import re` to use regular expressions.  This is built in to python.
 
 ```
 import re
@@ -137,14 +137,18 @@ if match_object != None:
     print match_object.string
 ```
 
-And the many of the regular expression methods return
-"Match objects" if there is a match, and "None" if there
+`re.search(pattern, string_to_be_searched)` is the basic
+syntax for searching for a (possibly complicated) pattern.
+Likemany of the regular expression methods, it returns
+"match objects" if there is a match, and "None" if there
 is no match.  It is conventional to test whether a match
-is equal to None, and if not, get the data out.
+is equal to None, and if not, get the data out.  Trying
+to get the data out of a NoneType object results in an error.
 
 # Grouping
 
-Within regular expressions, we will often desire to match more than one pattern
+Within regular expressions, we will often desire to match more 
+than one pattern
 at the same time, or to extract different parts of the matched string
 as different variables.
 
@@ -163,9 +167,14 @@ if matchresult != None:
 
 # Scraping
 
-Sometimes you will get the data is a less than convenient
+Sometimes you will get data is a less than convenient
 format.  Like HTML.  This page 
 http://www.ncbi.nlm.nih.gov/projects/WGS/WGSprojectlist.cgi
+Has a list of several thousand datasets in an HTML table;
+they have dataset numbers, organism names, urls, and 
+some summaries of the data.  Suppose we wanted to extract
+all the urls (and later decide which urls looked relevant
+to our research).
 
 Exercise:
 Use curl to download this page.
@@ -174,4 +183,7 @@ curl http://www.ncbi.nlm.nih.gov/projects/WGS/WGSprojectlist.cgi > WGSprojectlis
 ```
 
 Go through the page one line at a time.
+Use a regular expression to find the href=URL tags.
 Print all the urls linked on the page.
+
+
