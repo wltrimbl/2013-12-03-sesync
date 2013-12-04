@@ -45,10 +45,10 @@ If you are using version control, you can easily get back to a working
 version...but now you have to fix this new bug without breaking your
 new feature.  So steps 3 and 4 become:
 
-3a. Run your program using feature 1
-4a. Check for errors
-3b. Run your program using feature 2
-4b. Check for errors
+* Run your program using feature 1
+* Check for errors
+* Run your program using feature 2
+* Check for errors
 
 You can easily see that when you add features 3, 4, and 5, this is going
 to get really tedious.
@@ -59,13 +59,12 @@ yourself repeating a task over and over again, what do you do?
 
 ## Test Automation
 
-*The* most important advantage that experienced programmers have over
-the less experienced is the use of automated testing.  At the most
-fundamental level this means that steps 3a, 4a, 3b, 4b, etc, etc
-become:
+*The* most important advantage that good experienced programmers have
+over the less experienced is the use of automated testing.  At the most
+fundamental level this means that the multiple steps above
+become just one:
 
-3. Run the test suite
-4. Check for errors
+* Run the test suite and see if it passes
 
 In other words, you *automate* running your program in all the ways that
 you care about (and as many that you don't care about that you can make
@@ -109,7 +108,7 @@ It reads the data in the file named by input_fn, processes it, and writes
 the results to the file output_fn.
 
 In the examples directory you'll also find subdirectories named
-test_data and test_results, and a simple shell script named
+`test_data` and `test_results`, and a simple shell script named
 `test_reformat_usaid_map.sh`.
 
 The test program looks like this:
@@ -135,7 +134,7 @@ The test program looks like this:
 
 As you can see, this is fairly simple.  It runs the program on some
 sample data files and directs the output to a new subdirectory.  It also
-captures the programs stdout and stderr into separate files in that same
+captures the programs `stdout` and `stderr` into separate files in that same
 new directory.  It then uses the unix `diff` program to compare the output
 directory to a copy of the directory that contains the data we expect
 the program to produce.  If there are no differences, `diff` has a `0`
@@ -205,20 +204,20 @@ around with the `reformat_usaid_map.py` function `reformat_spec_line`
 like this:
 
     >>> from process_data import normalize_string
-    >>> normalize_string('CASEID            (id) Case Identification'
-                         ' 1   15   AN    I    1   0   No   No')
+    >>> spec = 'CASEID            (id) Case Identification                1   15   AN    I    1   0   No   No'
     >>> reformat_spec_line(spec)
     ['CASEID', '(id) Case Identification', '1', '15', 'AN', 'I', '1', '0', 'No', 'No']
 
-(I cut and pasted that string from the sample data file, and then
-split it up so that it would fit within the page width better.)
+(I cut and pasted that string from the sample data file.)
 
 Guess what?  We just wrote a doctest.  And the .md source file for this
 page could now be run as a test file using doctest.
 
-In general a great way to write doctests is to run some experiments at
-the Python prompt, and then save the test by cutting and pasting it into
-your doctest file.
+In general a great way to write doctests is to run some experiments
+at the Python prompt, and then save the test by cutting and pasting it
+into your doctest file.  A better way is to write the output by hand,
+based on what you expect the output to be.  (I usually do a mixture of
+the two in practice.)
 
 Doctests are similar in principle to our scripted test using diff,
 in that the output of the commands is compared to what is actually
@@ -230,10 +229,10 @@ is, making it easier to find and fix.  (You'll see in a moment that it
 doesn't help with finding what exactly changed in the output when the
 difference is subtle, though!)
 
-A single doctest file is like a single interactive interpreter session:
-everything you do (imports, giving a value to a variable, etc) affects
-the later examples, even if you put non-doctest text in between the
-doctest snippets.
+A single doctest file is like a single interactive interpreter session
+or a single iPython Notebook page: everything you do (imports, giving
+a value to a variable, etc) affects the later examples, even if you put
+non-doctest text in between the doctest snippets.
 
 ### Exercise:
 
@@ -307,7 +306,7 @@ Take a look at the file `test_reformat_usaid_map.py` in the examples directory.
 
 In the exercises directory, run the following command:
 
-    > nose
+    > nosetests
 
 This automatically "discovers" all of the `.py` files that contain
 classes that are subclasses of `unittest.TestCase`, collects all of
@@ -316,6 +315,39 @@ and runs them one by one, reporting the results.  Each '.' represents
 a single successful test method.
 
 You know the drill by now: edit `reformat_usaid_map.py` and break it,
-first by changing the column name, then by making a syntax error, and
-re-run the `nose` command each time to see what it does.  Like `doctest`,
-`nose` has a `-v` option you might want to try out as well.
+first by changing the column name, then by making a syntax error,
+and re-run the `nosetests` command each time to see what it does.
+Like `doctest`, `nosetests` has a `-v` option you might want to try out
+as well.
+
+
+## Bonus Exercise:
+
+Perhaps we will be processing more than one MAP file, and we will end up
+concatenating all the output files together.  We'll only want one header
+line in that case.  So let's add an option to suppress generating the
+header line.  You can add the option by adding a line like this to the
+`__main__` part of the program:
+
+    parser.add_argument('-n', '--no-header', action='store_true', default=False,
+                        help='Suppress the header line')
+
+With that in place, `args.no_header` will be `False` unless the `-b`
+option is specified when the command is run.  You can then pass
+the `args.no_header` value to the `generate_csv` function to
+control whether or not it produces the header.
+
+The exercise is to *first* add a new unit test method to
+`test_reformat_usaid_map.py` and a new command line test to
+`test_reformat_isaid_map.sh` that exercise the new behavior and tests
+that it produces the correct output.  Run the tests and confirm that
+your new test fails.  *Then* modify `reformat_usaid_map.py` to add the
+new option, and run your test suite as many times as it takes to get
+your new code working.
+
+Note: unless you know about and use a keyword argument, you will also
+have to modify the existing `test_generate_csv` test method slightly to
+account for the new `generate_csv` function signature.  Do *not* however,
+modify it into the new test.  You should have two different tests for
+`generate_csv` at the end of the exercise: the one with the original
+output, and the one with the new output.

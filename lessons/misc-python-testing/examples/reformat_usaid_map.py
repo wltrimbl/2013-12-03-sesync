@@ -18,12 +18,19 @@ COLUMNS = [
     ]
 
 def generate_csv(inf, outf):
+    """Reformat data from inf MAP file as csv and write it to outf."""
     o = csv.writer(outf)
     o.writerow(COLUMNS)
     for row in reformat_data(inf):
         o.writerow([inf.name] + row)
 
 def reformat_data(inp):
+    """Read data from inp iterable and yield reformatted data lines.
+
+    The inp iterable is the data from a USAID MAP file, the lines yielded are
+    lists of values in the order of the COLUMNS variable of this module,
+    except without the Map_Name field.
+    """
     lines = iter(inp)
 
     # First, find the start of the map records, which we assume for the moment
@@ -51,12 +58,19 @@ def reformat_data(inp):
             break
 
 def reformat_block(specline, values):
+    """Given a USAID MAP spec line and a list of supplemental description
+    lines, return a list of values in the order of the COLUMNS variable of this
+    module, except without the leading Map_Name field.
+    """
     data = reformat_spec_line(specline)
     desc = '\n'.join(values)
     data.append(desc)
     return data
 
 def reformat_spec_line(line):
+    """Given a USIAD MAP spec line, return a list of values in the order of
+    the COLUMNS variable of this module, but without the Map_Name or Values
+    fields."""
     qname, qlabel = line[:71].split(None, 1)
     qlabel = qlabel.strip()
     spec = line[71:].split()

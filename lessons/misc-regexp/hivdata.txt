@@ -1,0 +1,12 @@
+ name  test,HIV-1 M subtype         date
+   A3        antibody HIV-A   2003-06-11
+   B5        antibody HIV-B   2011-06-01
+  A11     HIV-B, (antibody)   2009-12-11
+  C21       HIV-A (antigen)   2010-11-03
+   C8   HIV-A/B, (antibody)    2003-8-15
+   33      antibody HIV-A/B     2003-2-2
+   A4        antibody HIV-B    1998-6-20
+  A18      HIV-B, (antigen)   1997-05-08
+   C7      HIV-B (antibody)    1995-10-7
+    6       antigen HIV-A/B   2003-11-15
+  B30       HIV-A (antigen)   200-006-09
